@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>Pain Catastrophising Scale (PCS)</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+  }
+  h1 { margin-bottom: 0.3em; }
+  .section {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  .item-title { font-weight: bold; margin-bottom: 8px; }
+  .options label { display: block; margin: 2px 0; }
+  .score-box {
+    margin-top: 20px;
+    padding: 12px;
+    border: 1px solid #888;
+    border-radius: 6px;
+    background: #f7f7f7;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px 18px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Pain Catastrophising Scale (PCS)</h1>
+<p>請根據您在痛楚時的想法或感受，選擇最符合您的程度。</p>
+<p><b>0 = 完全沒有　1 = 輕微　2 = 一般　3 = 甚多　4 = 常出現</b></p>
+
+<div id="questions"></div>
+
+<button onclick="calculatePCS()">計算分數</button>
+
+<div class="score-box">
+  <h2>結果</h2>
+  <p><b>總分：</b> <span id="totalScore">—</span></p>
+  <p><b>無助感（Helplessness）：</b> <span id="helplessScore">—</span></p>
+  <p><b>誇大化（Magnification）：</b> <span id="magScore">—</span></p>
+  <p><b>反芻（Rumination）：</b> <span id="rumScore">—</span></p>
+</div>
+
+<script>
+const items = [
+  "1. 當我痛楚時，我經常憂慮究竟痛楚會否完結。",
+  "2. 當我痛楚時，我感到不能繼續這況。",
+  "3. 當我痛楚時，我感到它是可怕的，我永遠也不會好轉。",
+  "4. 當我痛楚時，我感到痛楚是恐怖的，它將我完全淹沒。",
+  "5. 當我痛楚時，我感到不能再忍受下去。",
+  "6. 當我痛楚時，我害怕痛楚會越來越嚴重。",
+  "7. 當我痛楚時，我不斷想著其他痛苦的事情。",
+  "8. 當我痛楚時，我焦慮地希望痛楚離去。",
+  "9. 當我痛楚時，我似乎不能停止想著它。",
+  "10. 當我痛楚時，我不斷想著它帶來多少痛苦。",
+  "11. 當我痛楚時，我不斷想著我是多麼的渴望痛楚會停止。",
+  "12. 當我痛楚時，我感到沒法減少痛楚的程度。",
+  "13. 當我痛楚時，我擔心會有更嚴重的事情發生。"
+];
+
+// Subscale item indices (0-based)
+const helpless = [0,1,2,3,4,11];
+const magnification = [5,6,12];
+const rumination = [7,8,9,10];
+
+function renderQuestions() {
+  const container = document.getElementById("questions");
+  items.forEach((text, i) => {
+    const div = document.createElement("div");
+    div.className = "section";
+    div.innerHTML = `
+      <div class="item-title">${text}</div>
+      <label><input type="radio" name="q${i}" value="0"> 0 完全沒有</label>
+      <label><input type="radio" name="q${i}" value="1"> 1 輕微</label>
+      <label><input type="radio" name="q${i}" value="2"> 2 一般</label>
+      <label><input type="radio" name="q${i}" value="3"> 3 甚多</label>
+      <label><input type="radio" name="q${i}" value="4"> 4 常出現</label>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function calculatePCS() {
+  let total = 0;
+  let h = 0, m = 0, r = 0;
+
+  for (let i = 0; i < items.length; i++) {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    if (!selected) {
+      alert("請完成所有題目再計算分數。");
+      return;
+    }
+    const val = Number(selected.value);
+    total += val;
+
+    if (helpless.includes(i)) h += val;
+    if (magnification.includes(i)) m += val;
+    if (rumination.includes(i)) r += val;
+  }
+
+  document.getElementById("totalScore").textContent = total;
+  document.getElementById("helplessScore").textContent = h;
+  document.getElementById("magScore").textContent = m;
+  document.getElementById("rumScore").textContent = r;
+}
+
+renderQuestions();
+</script>
+
+</body>
+</html>
